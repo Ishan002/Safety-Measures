@@ -1,0 +1,37 @@
+import os
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+from sklearn.metrics import confusion_matrix
+
+# Function to read labels from files in a folder
+def read_labels_from_folder(folder_path):
+    labels = []
+    for filename in os.listdir(folder_path):
+        with open(os.path.join(folder_path, filename), 'r') as file:
+            # Assuming one label per line in the file
+            file_labels = [int(line.strip()) for line in file.readlines()]
+            labels.extend(file_labels)
+    return labels
+
+# Folder paths
+ground_truth_folder = r"C:\Users\hiten\Desktop\ground\images\New folder"
+predicted_folder = r"C:\Users\hiten\Desktop\predicted_images\New folder"
+
+# Read ground truth and predicted labels
+ground_truth_labels = read_labels_from_folder(ground_truth_folder)
+predicted_labels = read_labels_from_folder(predicted_folder)
+
+# Define classes
+classes = np.unique(ground_truth_labels + predicted_labels)
+
+# Create confusion matrix
+cm = confusion_matrix(ground_truth_labels, predicted_labels, labels=classes)
+
+# Plot confusion matrix
+plt.figure(figsize=(8, 6))
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=classes, yticklabels=classes)
+plt.xlabel('Predicted')
+plt.ylabel('True')
+plt.title('Confusion Matrix')
+plt.show()
